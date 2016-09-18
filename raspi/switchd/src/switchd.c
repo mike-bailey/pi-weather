@@ -6,7 +6,7 @@
  *                                                        *
  * When push button-2 is pushed less than 2 secs, the     *
  * daemon executes a system shutdown. If button-2 is held *  
- * down for 2 secs or longer, theystem is rebooted.       *
+ * down for 2 secs or longer, the system is rebooted.     *
  *                                                        *
  * gcc switchd.c -o switchd -l wiringPi                   *
  * ------------------------------------------------------ */
