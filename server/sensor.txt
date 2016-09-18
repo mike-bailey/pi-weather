@@ -1,0 +1,1 @@
+Temp=26.3*C  Humidity=55.7%

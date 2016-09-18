@@ -1,0 +1,13 @@
+[Unit]
+Description=Switch Service
+Before=systemd-user-sessions.service
+
+[Service]
+Type=notify
+ExecStart=/srv/app/switchd/sbin/switchd
+StandardOutput=null
+Restart=on-failure
+ExecStop=kill -SIGTERM `cat /var/run/switchd.pid`
+
+[Install]
+Alias=switch.service
