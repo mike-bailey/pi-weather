@@ -32,11 +32,12 @@ raspistill -w 640 -h 480 -q 80 -o /tmp/raspicam.jpg
 # -------------------------------------------------------- #
 SENSORDATA=`python /home/pi/sensor/Adafruit_Python_DHT/examples/simpletest.py`
 echo  $SENSORDATA > /tmp/sensor.txt;
-echo  $SENSORDATA >> /tmp/backup.txt;
 
+echo  $SENSORDATA >> /tmp/backup.txt;
 LENGTH=`wc -l /tmp/backup.txt | cut -d " " -f 1,1`
 if [ $LENGTH -gt 60 ]; then
-  sed --in-place '$d' /tmp/backup.txt
+  # delete the first (oldest) line from file
+  sed --in-place '1d' /tmp/backup.txt
 fi
 
 # -------------------------------------------------------- #
