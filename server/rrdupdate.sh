@@ -1,17 +1,59 @@
 #!/bin/bash
 
 date
-cp /opt/raspi/data/raspicam.jpg /srv/www/std-root/fm4dd.com/misc/images
 
 # --------------------------------
-# write new data into the RRD DB
+# Copy the camera image into place
+# --------------------------------
+
+cp /opt/raspi/data/raspicam.jpg /srv/www/std-root/fm4dd.com/misc/images
+
+
+# --------------------------------
+# Check if sensor data is stale
 # --------------------------------
 
 cat /opt/raspi/data/sensor.txt
 TIME=`cat /opt/raspi/data/sensor.txt | cut -d " " -f 1`
+if [ "$TIME" == "" ]; then
+  echo "Error getting timestamp from sensor.txt"
+  exit
+fi
+
+OLDTIME=`/usr/bin/rrdtool last /opt/raspi/data/am2302.rrd`
+if [ "$TIME" = "$OLDTIME" ]; then
+  echo "Error getting new sensor data: last update from: `date -d @$TIME`"
+  exit
+else
+  echo "Received new sensor data, TS: `date -d @$TIME`"
+fi
+
+# --------------------------------
+# Did we recover from a NW outage?
+# --------------------------------
+
+let TDIFF=$TIME-$OLDTIME
+if [ $TDIFF -gt 90 ]; then
+  echo "Recovered from approx. $TDIFF seconds network outage."
+fi
+
 TEMP=`cat /opt/raspi/data/sensor.txt | cut -d " " -f 2 | cut -c 6- | cut -d "*" -f 1`
-HUMI=`cat /opt/raspi/data/sensor.txt | cut -d " " -f 4 | cut -c 10- | cut -d "%" -f 1`
+if [ "$TEMP" == "" ]; then
+  echo "Error getting temperature from sensor.txt"
+  exit
+fi
+
+HUMI=`cat /opt/raspi/data/sensor.txt | cut -d " " -f 3 | cut -c 10- | cut -d "%" -f 1`
+if [ "$HUMI" == "" ]; then
+  echo "Error getting humidity from sensor.txt"
+  exit
+fi
+
 REAL=`/opt/raspi/data/thicalc $TEMP $HUMI`
+
+# --------------------------------
+# write new data into the RRD DB
+# --------------------------------
 
 echo "/usr/bin/rrdtool update /opt/raspi/data/am2302.rrd $TIME:$TEMP:$HUMI:$REAL"
 /usr/bin/rrdtool updatev /opt/raspi/data/am2302.rrd "$TIME:$TEMP:$HUMI:$REAL"

@@ -1,1 +1,1 @@
-1474181287 Temp=26.6*C  Humidity=78.8%
+1474521548 Temp=20.4*C Humidity=99.9%
