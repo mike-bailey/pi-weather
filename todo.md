@@ -1,6 +1,6 @@
-local buffering to acommodate network disconnects:
+Local buffering to accommodate network disconnects:
 
-add JST timestamp to sensor.txt line
-update rrd loader to read timestamp in sensor.txt
-create local rrd, and write data into local rrd
-local image archiver for /tmp/raspicam.jpg
+[ ] Add JST timestamp to sensor.txt line
+[ ] Update rrd loader to read timestamp in sensor.txt
+[ ] Create local rrd, and write data into local rrd
+[ ] Local image archiver for /tmp/raspicam.jpg
